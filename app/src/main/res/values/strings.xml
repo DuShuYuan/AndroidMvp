@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BaseMVP</string>
+
+
+    <string name="settings">设置</string>
+    <string name="help">帮助</string>
+    <string name="string_help_text">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>
+    <string name="quit">退出</string>
+
+    <string name="state_load_fail">加载失败</string>
+    <string name="state_net_error">网络链接失败</string>
+    <string name="state_empty">暂无数据</string>
+</resources>
