@@ -12,7 +12,7 @@ public class MLog {
     public static void initLogger(){
         LogUtils.getConfig().setStackOffset(1)
                 .setLogSwitch(BuildConfig.DEBUG)
-                .setGlobalTag("dsy");
+                .setGlobalTag("DSY");
     }
 
     /**

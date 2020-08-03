@@ -1,17 +1,13 @@
-package com.dsy.mvp.base.impl;
+package com.dsy.mvp.base.impl
 
-
-import androidx.annotation.NonNull;
-
-public interface IPresenter {
+interface IPresenter {
     /**
      * 注入View，使之能够与View相互响应
      */
-    void attachView(@NonNull IView iView);
+    fun attachView(iView: IView)
 
     /**
      * 释放资源，如果使用了网络请求 可以在此执行IModel.cancelRequest()
      */
-    void detachView();
-
+    fun detachView()
 }

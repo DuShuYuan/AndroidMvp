@@ -2,25 +2,26 @@ package com.dsy.mvp.ui.adapter;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentTabAdapter {
-    private List<Fragment> fragments; // tab页面对应的Fragment
-    private FragmentActivity fragmentActivity; // Fragment所在的Activity
+    private ArrayList<Fragment> fragments; // tab页面对应的Fragment
+    private FragmentManager fragmentManager;
     private int fragmentContentId; // Activity中所要被替换的区域的id
     private int currentTab; // 当前Tab页面索引
     private OnTabChangeListener onTabChangeListener;
 
-    public FragmentTabAdapter(FragmentActivity fragmentActivity,
-                              List<Fragment> fragments, int fragmentContentId) {
+    public FragmentTabAdapter(FragmentManager fragmentManager,
+                              ArrayList<Fragment> fragments, int fragmentContentId) {
         this.fragments = fragments;
-        this.fragmentActivity = fragmentActivity;
+        this.fragmentManager = fragmentManager;
         this.fragmentContentId = fragmentContentId;
         // 默认显示第一页
-        FragmentTransaction ft = fragmentActivity.getSupportFragmentManager()
-                .beginTransaction();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(fragmentContentId, fragments.get(0));
         try {
             ft.commitAllowingStateLoss();
@@ -58,8 +59,7 @@ public class FragmentTabAdapter {
      * @return
      */
     private FragmentTransaction obtainFragmentTransaction(int index) {
-        FragmentTransaction ft = fragmentActivity.getSupportFragmentManager()
-                .beginTransaction();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         // 设置切换动画
 //		if (index > currentTab) {
 //			ft.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_left_out);
