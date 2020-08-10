@@ -11,6 +11,7 @@ class MainActivity : BaseActivity<MainPresenter>(R.layout.activity_main), MainCo
     private var isExit = false
 
     override fun initView() {
+        window.setBackgroundDrawable(null)
         setToolbar(getString(R.string.app_name))
         showEmptyView()
     }
