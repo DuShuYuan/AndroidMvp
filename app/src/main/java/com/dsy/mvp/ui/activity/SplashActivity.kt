@@ -3,10 +3,11 @@ package com.dsy.mvp.ui.activity
 import android.Manifest
 import android.content.Intent
 import com.dsy.mvp.base.BaseActivity
+import com.dsy.mvp.base.SimpleContract
 import com.dsy.mvp.base.SimplePresenter
 import com.dsy.mvp.component.PermissionsRequest
 
-class SplashActivity : BaseActivity<SimplePresenter>(0) {
+class SplashActivity : BaseActivity<SimplePresenter>(0) ,SimpleContract.View{
 
     //TODO 需要申请的权限
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)

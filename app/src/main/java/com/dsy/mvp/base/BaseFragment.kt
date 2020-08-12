@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ToastUtils
 import com.dsy.mvp.base.impl.IPresenter
@@ -60,23 +61,23 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
         return modelClass.newInstance() as T
     }
 
-    fun showLoadingView() {
+    override fun showLoadingView() {
         mLoadingHelper.showLoadingView()
     }
 
-    fun showContentView() {
+    override fun showContentView() {
         mLoadingHelper.showContentView()
     }
 
-    fun showErrorView() {
+    override fun showErrorView() {
         mLoadingHelper.showErrorView()
     }
 
-    fun showEmptyView() {
+    override fun showEmptyView() {
         mLoadingHelper.showEmptyView()
     }
 
-    fun showCustomView(viewType: Any) {
+    override fun showCustomView(viewType: Any) {
         mLoadingHelper.showView(viewType)
     }
 
@@ -100,11 +101,11 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
     override val mActivity: Activity
         get() = activity!!
 
-    override fun toast(msg: String) {
+    override fun toast(msg: CharSequence) {
         ToastUtils.showShort(msg)
     }
 
-    override fun toast(id: Int) {
+    override fun toast(@StringRes id: Int) {
         ToastUtils.showShort(id)
     }
 
@@ -120,7 +121,7 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mPresenter.detachView()
+        super.onDestroy()
     }
 }

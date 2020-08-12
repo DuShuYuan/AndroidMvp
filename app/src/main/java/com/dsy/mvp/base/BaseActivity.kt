@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.ToastUtils
 import com.dsy.mvp.base.impl.IPresenter
@@ -37,23 +38,23 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
         initData()
     }
 
-    fun showLoadingView() {
+    override fun showLoadingView() {
         mLoadingHelper.showLoadingView()
     }
 
-    fun showContentView() {
+    override fun showContentView() {
         mLoadingHelper.showContentView()
     }
 
-    fun showErrorView() {
+    override fun showErrorView() {
         mLoadingHelper.showErrorView()
     }
 
-    fun showEmptyView() {
+    override fun showEmptyView() {
         mLoadingHelper.showEmptyView()
     }
 
-    fun showCustomView(viewType: Any) {
+    override fun showCustomView(viewType: Any) {
         mLoadingHelper.showView(viewType)
     }
 
@@ -102,11 +103,11 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
     override val mActivity: Activity
         get() = this
 
-    override fun toast(id: Int) {
+    override fun toast(@StringRes id: Int) {
         ToastUtils.showShort(id)
     }
 
-    override fun toast(msg: String) {
+    override fun toast(msg: CharSequence) {
         ToastUtils.showShort(msg)
     }
 

@@ -17,7 +17,9 @@ class MainActivity : BaseActivity<MainPresenter>(R.layout.activity_main), MainCo
     }
 
     override fun initEvent() {}
-    override fun initData() {}
+    override fun initData() {
+        mPresenter.reqData()
+    }
 
     override fun onBackPressed() {
         if (System.currentTimeMillis() - exitTime > 2000) {
@@ -37,6 +39,6 @@ class MainActivity : BaseActivity<MainPresenter>(R.layout.activity_main), MainCo
     }
 
     override fun onSuccess() {
-        TODO("Not yet implemented")
+
     }
 }
