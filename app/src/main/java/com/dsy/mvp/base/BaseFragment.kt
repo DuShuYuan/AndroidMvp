@@ -30,8 +30,8 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null == rootView) {
-            rootView = inflater.inflate(layoutId, container, false)
-            mLoadingHelper = LoadingHelper(rootView!!)
+            val view = inflater.inflate(layoutId, container, false)
+            rootView = initLoadingHelper(view)
             mLoadingHelper.setOnReloadListener { onReload() }
             isViewBind = false
         }
@@ -39,6 +39,12 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
 //        parent?.removeView(rootView)
         return mLoadingHelper.decorView
     }
+
+    protected open fun initLoadingHelper(rootView: View): View {
+        mLoadingHelper = LoadingHelper(rootView)
+        return mLoadingHelper.decorView
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

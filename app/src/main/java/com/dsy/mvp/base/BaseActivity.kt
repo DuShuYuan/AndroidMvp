@@ -28,7 +28,7 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
         beforeCreate()
         if (layoutId != 0) {
             setContentView(layoutId)
-            mLoadingHelper = LoadingHelper((findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0))
+            initLoadingHelper()
             mLoadingHelper.setOnReloadListener { onReload() }
         }
         mPresenter = initPresenter()
@@ -38,6 +38,13 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
         initData()
     }
 
+    /**
+     * 设置状态布局包裹的view，默认包裹整个布局，
+     * mLoadingHelper = LoadingHelper(view:View)
+     */
+    protected open fun initLoadingHelper() {
+        mLoadingHelper = LoadingHelper(this)
+    }
     override fun showLoadingView() {
         mLoadingHelper.showLoadingView()
     }
