@@ -12,6 +12,8 @@ import com.dsy.mvp.base.impl.IPresenter
 import com.dsy.mvp.base.impl.IView
 import com.dsy.mvp.ui.adapter.NavIconType
 import com.dsy.mvp.ui.adapter.ToolbarAdapter
+import com.dsy.mvp.widget.status.LoadStatus
+import com.dsy.mvp.widget.status.StatusHolder
 import com.dylanc.loadinghelper.LoadingHelper
 import com.dylanc.loadinghelper.ViewType
 import java.lang.reflect.ParameterizedType
@@ -22,14 +24,16 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
     var progressDialog: ProgressDialog? = null
     protected lateinit var mPresenter: T
     protected lateinit var mLoadingHelper: LoadingHelper
+    private lateinit var mStatusHolder: StatusHolder.Holder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         beforeCreate()
         if (layoutId != 0) {
             setContentView(layoutId)
-            initLoadingHelper()
-            mLoadingHelper.setOnReloadListener { onReload() }
+            initStatusHolder()
+            mLoadingHelper = LoadingHelper(this)
+            mStatusHolder.withRetry { onReload() }
         }
         mPresenter = initPresenter()
         mPresenter.attachView(this)
@@ -38,32 +42,40 @@ abstract class BaseActivity<T : IPresenter>(private val layoutId: Int) : AppComp
         initData()
     }
 
+    private fun initStatusHolder() {
+        mStatusHolder = if (getStatusWrapView() != null) {
+            StatusHolder.getDefault().wrap(getStatusWrapView())
+        } else {
+            StatusHolder.getDefault().wrap(this)
+        }
+    }
+
     /**
-     * 设置状态布局包裹的view，默认包裹整个布局，
-     * mLoadingHelper = LoadingHelper(view:View)
+     * 状态布局包裹的view
      */
-    protected open fun initLoadingHelper() {
-        mLoadingHelper = LoadingHelper(this)
+    protected open fun getStatusWrapView(): View? {
+        return null
     }
     override fun showLoadingView() {
-        mLoadingHelper.showLoadingView()
+        mStatusHolder.showLoading()
     }
 
     override fun showContentView() {
-        mLoadingHelper.showContentView()
+        mStatusHolder.showLoadSuccess()
     }
 
     override fun showErrorView() {
-        mLoadingHelper.showErrorView()
+        mStatusHolder.showLoadFailed()
     }
 
     override fun showEmptyView() {
-        mLoadingHelper.showEmptyView()
+        mStatusHolder.showEmpty()
     }
 
-    override fun showCustomView(viewType: Any) {
-        mLoadingHelper.showView(viewType)
+    override fun showCustomView(status: LoadStatus) {
+        mStatusHolder.showLoadingStatus(status)
     }
+
 
     protected fun setToolbar(title: String, type: NavIconType = NavIconType.NONE) {
         mLoadingHelper.apply {

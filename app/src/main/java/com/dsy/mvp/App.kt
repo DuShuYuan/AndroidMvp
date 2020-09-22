@@ -5,15 +5,14 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import com.blankj.utilcode.util.Utils
 import com.dsy.mvp.component.CrashHandler
-import com.dsy.mvp.ui.adapter.EmptyAdapter
-import com.dsy.mvp.ui.adapter.ErrorAdapter
-import com.dsy.mvp.ui.adapter.LoadingAdapter
 import com.dsy.mvp.utils.MLog
-import com.dylanc.loadinghelper.LoadingHelper
-import com.dylanc.loadinghelper.LoadingHelper.AdapterPool
-import com.dylanc.loadinghelper.ViewType
+import com.dsy.mvp.widget.status.StatusHolder
+import com.dsy.mvp.widget.status.StatusView
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
@@ -27,10 +26,26 @@ class App : Application() {
         //错误捕获工具
         CrashHandler(this)
         initOkgo()
-        LoadingHelper.setDefaultAdapterPool {
-            register(ViewType.LOADING, LoadingAdapter())
-            register(ViewType.ERROR, ErrorAdapter())
-            register(ViewType.EMPTY, EmptyAdapter())
+
+        StatusHolder.initDefault { holder, convertView, status ->
+            val sView: StatusView = if (convertView != null && convertView is StatusView) {
+                convertView
+            } else {
+                StatusView(holder.context, holder.retryTask)
+            }
+            sView.setStatus(status)
+            return@initDefault sView
+        }
+
+
+        //设置全局的Header构建器
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout ->
+//            layout.setPrimaryColorsId(R.color.colorPrimary, R.color.white) //全局设置主题颜色
+            return@setDefaultRefreshHeaderCreator MaterialHeader(context).setColorSchemeResources(R.color.colorAccent)
+        }
+        //设置全局的Footer构建器
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> //指定为经典Footer，默认是 BallPulseFooter
+            ClassicsFooter(context).setDrawableSize(20f).setFinishDuration(0)
         }
     }
 

@@ -2,6 +2,7 @@ package com.dsy.mvp.base.impl
 
 import android.app.Activity
 import androidx.annotation.StringRes
+import com.dsy.mvp.widget.status.LoadStatus
 
 interface IView {
     val mActivity: Activity
@@ -13,5 +14,5 @@ interface IView {
     fun showContentView()
     fun showErrorView()
     fun showEmptyView()
-    fun showCustomView(viewType: Any)
+    fun showCustomView(status: LoadStatus)
 }

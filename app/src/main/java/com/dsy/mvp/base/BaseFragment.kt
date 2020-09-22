@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ToastUtils
 import com.dsy.mvp.base.impl.IPresenter
 import com.dsy.mvp.base.impl.IView
+import com.dsy.mvp.widget.status.LoadStatus
+import com.dsy.mvp.widget.status.StatusHolder
 import com.dylanc.loadinghelper.LoadingHelper
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -22,6 +24,7 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
     protected var isViewBind = false
     private var isFirstVisible = true //第一次展示
     protected lateinit var mLoadingHelper:LoadingHelper
+    protected lateinit var mStatusHolder: StatusHolder.Holder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPresenter = initPresenter()
@@ -31,8 +34,14 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null == rootView) {
             val view = inflater.inflate(layoutId, container, false)
-            rootView = initLoadingHelper(view)
-            mLoadingHelper.setOnReloadListener { onReload() }
+            if (getStatusWrapView(view) == null){
+                mStatusHolder = StatusHolder.getDefault().wrap(view)
+                rootView = mStatusHolder.wrapper
+            }else{
+                mStatusHolder = StatusHolder.getDefault().wrap(getStatusWrapView(view))
+                rootView = view
+            }
+            mStatusHolder.withRetry { onReload() }
             isViewBind = false
         }
 //        val parent = rootView?.parent as ViewGroup?
@@ -40,11 +49,12 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
         return mLoadingHelper.decorView
     }
 
-    protected open fun initLoadingHelper(rootView: View): View {
-        mLoadingHelper = LoadingHelper(rootView)
-        return mLoadingHelper.decorView
+    /**
+     * 状态布局包裹的view
+     */
+    protected open fun getStatusWrapView(rootView: View): View? {
+        return null
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,24 +78,25 @@ abstract class BaseFragment<T : IPresenter>(private val layoutId: Int) : Fragmen
     }
 
     override fun showLoadingView() {
-        mLoadingHelper.showLoadingView()
+        mStatusHolder.showLoading()
     }
 
     override fun showContentView() {
-        mLoadingHelper.showContentView()
+        mStatusHolder.showLoadSuccess()
     }
 
     override fun showErrorView() {
-        mLoadingHelper.showErrorView()
+        mStatusHolder.showLoadFailed()
     }
 
     override fun showEmptyView() {
-        mLoadingHelper.showEmptyView()
+        mStatusHolder.showEmpty()
     }
 
-    override fun showCustomView(viewType: Any) {
-        mLoadingHelper.showView(viewType)
+    override fun showCustomView(status: LoadStatus) {
+        mStatusHolder.showLoadingStatus(status)
     }
+
 
     /**
      * 控件绑定
